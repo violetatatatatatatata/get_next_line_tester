@@ -3,74 +3,70 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avelandr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: avelandr <avelandr@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/13 11:32:41 by avelandr          #+#    #+#             */
-/*   Updated: 2025/02/21 15:46:12 by avelandr         ###   ########.fr       */
+/*   Created: 2025/02/26 01:25:20 by avelandr          #+#    #+#             */
+/*   Updated: 2025/02/26 03:40:48 by avelandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+/*
+	- fd es un entero que identifica el proceso ejecutado, los estandar son
+	0(stdin), 1(stdout) y 2(stderr)
+	- buffer es un puntero al bloque de memoria donde se almacenan los datos
+	ha de ser lo suficientemente grande para contener count, si no, concatenar
+	- count es el numero de bytes por leer
+	- read() retorna el numero de bytes leidos, -1 (error) o 0 (EOF)
+*/
+
 char	*get_next_line(int fd)
 {
-	char	*content;
-	char	*new_cache;
-	char	*line;
-	int	len;
-
-	len = 0;
-	content = memory_cache(fd);
-	if (!content || *content == '\0')
-		return (NULL);
-	while (content[len] && content[len] != '\n')
-		len++;
-	line = malloc(len + 2);
-	if (!line)
-		return (NULL);
-	ft_strlcpy(line, content, len + 1);
-	if (content[len] == '\n')
-		line[len++] = '\n';
-	line[len] = '\0';
-	if (content[len] == '\0')
-		new_cache = NULL;
-	else
-		new_cache = ft_strdup(content + len);
-	free(content);
-	content = new_cache;
-	return (line);
-}
-
-char	*update_cache(char *cache, char *buffer)
-{
-	char	*temp;
-
-	if (!cache)
-		return ft_strdup(buffer);
-	temp = ft_strjoin(cache, buffer);
-	free(cache);
-	return (temp);
-}
-
-char	*memory_cache(int fd)
-{
-	ssize_t		line_len;
 	static char	*cache;
-	char		buffer[BUFF_SIZE + 1];
+	int			leido;
+	char		texto[BUFF_SIZE + 1];
+	char		*linea;
 
-	if (fd < 0)
+	if (fd < 0 || BUFF_SIZE <= 0)
 		return (NULL);
-	line_len = read(fd, buffer, BUFF_SIZE);
-	while (line_len > 0)
+	new_line = ft_strchr(cache, '\n');
+	while (new_line = NULL)
 	{
-		buffer[line_len] = '\0';
-		cache = update_cache(cache, buffer);
-		line_len = read(fd, buffer, BUFF_SIZE);
+        leido = read(fd, texto, BUFF_SIZE);
+		if (leido <= 0)
+		{
+			if (leido == 0 && cache != NULL)
+			{
+				linea = ft_strdup(cache);
+				free(cache);
+				cache = NULL;
+				return (linea)
+			}
+			return (NULL);
+		}
+		texto[leido] = '\0';
+		cache = ft_strjoin(cache, texto);
+		if (!cache)
+		{
+			return (NULL);
+			free(cache);
+		}
+		if (is_new_line(&cache))
+			linea = ft_strchr(cache, '\n');
 	}
-	if (line_len == -1)
-	{
-		free(cache);
-		cache = NULL;
-	}
-	return (cache);
+	if (!cache)
+		return (NULL);
+	else
+		return (cache);
+	return (linea);
+	free(cache);
+}
+
+int	is_new_line(char str)
+{
+	if (str == '\n')
+		return (0);
+	else
+		return (1);
 }
