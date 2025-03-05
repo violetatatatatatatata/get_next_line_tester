@@ -6,54 +6,49 @@
 #    By: avelandr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/15 12:30:28 by avelandr          #+#    #+#              #
-#    Updated: 2025/02/16 11:44:47 by avelandr         ###   ########.fr        #
+#    Updated: 2025/03/05 16:35:17 by avelandr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# Compiladador y sus flags
+# Compilador y flags
 CC = cc
 CFLAGS = -Wall -Werror -Wextra
 
-# Libreria
-NAME = get_next_line.a
+# Nombre del ejecutable de pruebas
+TESTER = tester
 
-# Lista de funciones a compilar
-FUNCTIONS = get_next_line.c \
-	get_next_line_utils.c
+# Directorio del código fuente
+SRC_DIR = ..
+SRC_FILES = $(SRC_DIR)/get_next_line.c $(SRC_DIR)/get_next_line_utils.c
+HEADERS = $(SRC_DIR)/get_next_line.h
 
-OBJS = $(FUNCTIONS:%.c=%.o)
+# Archivos objeto
+OBJS = $(SRC_FILES:.c=.o)
 
-# Default target
-all: $(NAME)
+# Archivo de prueba
+MAIN = main.c
 
-# Rule to create the static library
-$(NAME): $(OBJS)
-	ar rcs $(NAME) $^
+# Regla por defecto
+all: $(TESTER)
 
-# Rule to compile .c files into .o files
-$(OBJS): %.o: %.c get_next_line.h Makefile
-	$(CC) -c $(CFLAGS) $< -o $@
+# Compilar el tester con get_next_line
+$(TESTER): $(OBJS) $(MAIN)
+	$(CC) $(CFLAGS) $(MAIN) $(OBJS) -o $(TESTER)
 
-$(BOBJS): %.o: %.c get_next_line.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
-# Rule to run Valgrind for memory leak checks
-valgrind: $(NAME)
-	valgrind --leak-check=full --track-fds=yes ./$(NAME)
-
-# Clean up the object files
+# Limpiar archivos objeto
 clean:
 	rm -f $(OBJS)
-# Clean up the object files and the library
-fclean: clean
-	rm -f $(NAME)
 
-# Rebuild the library from scratch
+# Limpiar todo
+fclean: clean
+	rm -f $(TESTER)
+
+# Recompilar desde cero
 re: fclean all
 
-# Print the list of functions (for debugging purposes)
-info:
-	$(info $(FUNCTIONS))
+# Regla para ejecutar el tester
+test: $(TESTER)
+	./$(TESTER)
 
-# Declare these rules as phony (they are not actual files)
-.PHONY: all clean fclean re info valgrind
+.PHONY: all clean fclean re test
+
