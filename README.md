@@ -8,17 +8,6 @@ Este tester evalúa exhaustivamente tu implementación de `get_next_line` utiliz
 - Gestión adecuada de memoria (sin leaks)
 - Comportamiento con líneas de distintas longitudes
 
-## Estructura del proyecto
-project_root/
-│
-├── get_next_line.c
-├── get_next_line_utils.c
-└── get_next_line.h
- ├── tester/
- │ ├── Makefile
- │ ├── main.c
- │ └── don_quijote.txt
-
 ## Cómo usar
 
 ### Compilación
