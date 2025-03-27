@@ -11,6 +11,14 @@ Este tester evalúa exhaustivamente tu implementación de `get_next_line` utiliz
 ## Cómo usar
 
 ### Compilación
+```sh
 make
+```
+
+```sh
 ./tester don_quijote.txt
+```
+
+```sh
 valgrind --leak-check=full --show-leak-kinds=all ./tester don_quijote.txt
+```
