@@ -11,17 +11,6 @@ Este tester evalúa exhaustivamente tu implementación de `get_next_line` utiliz
 ## Cómo usar
 
 ### Compilación
-```bash
-cd tester/
 make
-
-### Características del tester
-Lectura línea por línea del texto completo
-
-Informe de tiempo de ejecución
-
-Conteo de líneas procesadas
-
-Detección de líneas mal formadas
-
-Verificación exhaustiva de memory leaks
+./tester don_quijote.txt
+valgrind --leak-check=full --show-leak-kinds=all ./tester don_quijote.txt
